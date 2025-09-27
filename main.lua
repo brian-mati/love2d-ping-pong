@@ -6,6 +6,7 @@
 -- 3. Setup movement and collisions for ball 
 --]]
 --
+
 racket = {
   mode = "fill",
   x_axis_position = 20,
@@ -19,7 +20,8 @@ ball = {
   mode = "fill",
   x_axis_position = 50 , 
   y_axis_position = 20,
-  radius = 20
+  radius = 20,
+  speed = 5,
 }
 
 function love.load()
@@ -28,20 +30,25 @@ function love.load()
 
 end
 function love.update(dt)
+  ball.x_axis_position = ball.x_axis_position + ball.speed
+  ball.y_axis_position = ball.y_axis_position + ball.speed
   if love.keyboard.isDown("down") then
       racket.y_axis_position = racket.y_axis_position + racket.speed 
   end
    if love.keyboard.isDown("up") then
       racket.y_axis_position = racket.y_axis_position - racket.speed 
   end 
-
+  
 end
 
 function love.draw()
+    love.window.setTitle("Ping pong")
     -- love.graphics.print('Hello World!', 400, 300)
     --rectangle 
-    love.graphics.setColor(0,0.4,0,4)
+    love.graphics.setColor(1,1,1)
     love.graphics.rectangle(racket.mode,racket.x_axis_position,racket.y_axis_position,racket.width,racket.height)
     -- 
-  
+    love.graphics.setColor(1,1,1)
+    love.graphics.circle(ball.mode,ball.x_axis_position,ball.y_axis_position,ball.radius)
+ 
   end
