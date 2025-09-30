@@ -52,10 +52,7 @@ end
       racket.y_axis_position = racket.y_axis_position - racket.speed 
   end 
 
-  -- if ball.x_axis_position > buf_width + ball.radius then 
-  --   racket.x_axis_position = ball.x_axis_position - ball.speed
-  --
-  -- end
+
   
 end
 
