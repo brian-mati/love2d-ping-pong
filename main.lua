@@ -7,7 +7,12 @@
 --]]
 --
 
-racket = {
+
+function love.load()
+  -- rect_mode,x,y,w,h = "fill",20,20,20,80
+  -- circle_mode,x,y,radius="fill",50,20,20
+  buf_width, buf_height = love.graphics.getDimensions( )
+  racket = {
   mode = "fill",
   x_axis_position = 20,
   y_axis_position = 20,
@@ -20,24 +25,37 @@ ball = {
   mode = "fill",
   x_axis_position = 50 , 
   y_axis_position = 20,
+  x_velocity = 5,
+  y_velocity = 5,
   radius = 20,
-  speed = 5,
 }
-
-function love.load()
-  -- rect_mode,x,y,w,h = "fill",20,20,20,80
-  -- circle_mode,x,y,radius="fill",50,20,20
 
 end
 function love.update(dt)
-  ball.x_axis_position = ball.x_axis_position + ball.speed
-  ball.y_axis_position = ball.y_axis_position + ball.speed
+ball.x_axis_position = ball.x_axis_position + ball.x_velocity
+
+  ball.y_axis_position = ball.y_axis_position + ball.y_velocity
+
+  if ball.x_axis_position + ball.radius  >= buf_width or ball.x_axis_position  - ball.radius < 0 then
+    ball.x_velocity = -ball.x_velocity
+end
+
+  if ball.y_axis_position + ball.radius >= buf_height or ball.y_axis_position  - ball.radius < 0 then
+    ball.y_velocity = -ball.y_velocity
+end
+
+
   if love.keyboard.isDown("down") then
       racket.y_axis_position = racket.y_axis_position + racket.speed 
   end
    if love.keyboard.isDown("up") then
       racket.y_axis_position = racket.y_axis_position - racket.speed 
   end 
+
+  -- if ball.x_axis_position > buf_width + ball.radius then 
+  --   racket.x_axis_position = ball.x_axis_position - ball.speed
+  --
+  -- end
   
 end
 
@@ -50,5 +68,7 @@ function love.draw()
     -- 
     love.graphics.setColor(1,1,1)
     love.graphics.circle(ball.mode,ball.x_axis_position,ball.y_axis_position,ball.radius)
- 
+    
+     print(ball.x_axis_position)
+  
   end
