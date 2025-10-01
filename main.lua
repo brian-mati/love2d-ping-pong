@@ -12,48 +12,65 @@ function love.load()
   -- rect_mode,x,y,w,h = "fill",20,20,20,80
   -- circle_mode,x,y,radius="fill",50,20,20
   buf_width, buf_height = love.graphics.getDimensions( )
+
   racket = {
   mode = "fill",
-  x_axis_position = 20,
-  y_axis_position = 20,
+  x_axis = 20,
+  y_axis = 0,
   width = 20,
   height = 80,
-  speed = 5,
+  velocity = 5,
 }
 
 ball = {
   mode = "fill",
-  x_axis_position = 50 , 
-  y_axis_position = 20,
+  x_axis = 50 , 
+  y_axis = 20,
   x_velocity = 5,
   y_velocity = 5,
   radius = 20,
 }
+function checkCircleToRectangleCollision(ball,racket)
+	local nearestX = math.max(racket.x_axis, math.min(ball.x_axis, racket.x_axis + racket.width))
+	local nearestY = math.max(racket.y_axis, math.min(ball.y_axis, racket.y_axis + racket.height))
+	local dx, dy = math.abs(ball.x_axis - nearestX), math.abs(ball.y_axis - nearestY)
+  local ball_diameter = ball.radius*ball.radius
+	if dx > ball.radius or dy > ball.radius then return false end
+	return dx*dx + dy*dy < ball_diameter
+end
 
 end
 function love.update(dt)
-ball.x_axis_position = ball.x_axis_position + ball.x_velocity
+ball.x_axis = ball.x_axis + ball.x_velocity
 
-  ball.y_axis_position = ball.y_axis_position + ball.y_velocity
-
-  if ball.x_axis_position + ball.radius  >= buf_width or ball.x_axis_position  - ball.radius < 0 then
+  ball.y_axis = ball.y_axis + ball.y_velocity
+  if ball.x_axis + ball.radius  >= buf_width or ball.x_axis  - ball.radius < 0 then
     ball.x_velocity = -ball.x_velocity
 end
 
-  if ball.y_axis_position + ball.radius >= buf_height or ball.y_axis_position  - ball.radius < 0 then
+  if ball.y_axis + ball.radius >= buf_height or ball.y_axis  - ball.radius < 0 then
     ball.y_velocity = -ball.y_velocity
 end
 
 
   if love.keyboard.isDown("down") then
-      racket.y_axis_position = racket.y_axis_position + racket.speed 
+      racket.y_axis = racket.y_axis + racket.velocity
   end
    if love.keyboard.isDown("up") then
-      racket.y_axis_position = racket.y_axis_position - racket.speed 
+      racket.y_axis = racket.y_axis - racket.velocity
   end 
+ 
+  if racket.y_axis <= 0  then 
+    racket.y_axis = 0 
+  end
 
-
+  if racket.y_axis + racket.height > buf_height then 
+    racket.y_axis =  buf_height -  racket.height
+  end
   
+  if checkCircleToRectangleCollision(ball,racket) then 
+    ball.x_velocity = -ball.x_velocity
+  end
 end
 
 function love.draw()
@@ -61,11 +78,9 @@ function love.draw()
     -- love.graphics.print('Hello World!', 400, 300)
     --rectangle 
     love.graphics.setColor(1,1,1)
-    love.graphics.rectangle(racket.mode,racket.x_axis_position,racket.y_axis_position,racket.width,racket.height)
+    love.graphics.rectangle(racket.mode,racket.x_axis,racket.y_axis,racket.width,racket.height)
     -- 
     love.graphics.setColor(1,1,1)
-    love.graphics.circle(ball.mode,ball.x_axis_position,ball.y_axis_position,ball.radius)
+    love.graphics.circle(ball.mode,ball.x_axis,ball.y_axis,ball.radius)
     
-     print(ball.x_axis_position)
-  
   end
