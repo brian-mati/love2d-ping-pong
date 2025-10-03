@@ -1,16 +1,12 @@
 --[[
 -- SINGLE PLAYER PING PONG
 --## Todos 
---1. Draw racket and ball 
---2. Get map racket to W.A.S.D movement keys 
--- 3. Setup movement and collisions for ball 
+-- 1. 
 --]]
 --
 
 
 function love.load()
-  -- rect_mode,x,y,w,h = "fill",20,20,20,80
-  -- circle_mode,x,y,radius="fill",50,20,20
   buf_width, buf_height = love.graphics.getDimensions( )
 
   racket = {
@@ -19,15 +15,15 @@ function love.load()
   y_axis = 0,
   width = 20,
   height = 80,
-  velocity = 5,
+  velocity = 200,
 }
 
 ball = {
   mode = "fill",
-  x_axis = 50 , 
-  y_axis = 20,
-  x_velocity = 5,
-  y_velocity = 5,
+  x_axis = buf_width/2, 
+  y_axis = buf_height/2,
+  x_velocity = 200,
+  y_velocity = 200,
   radius = 20,
 }
 function checkCircleToRectangleCollision(ball,racket)
@@ -41,23 +37,16 @@ end
 
 end
 function love.update(dt)
-ball.x_axis = ball.x_axis + ball.x_velocity
+ball.x_axis = ball.x_axis + ball.x_velocity * dt
 
-  ball.y_axis = ball.y_axis + ball.y_velocity
-  if ball.x_axis + ball.radius  >= buf_width or ball.x_axis  - ball.radius < 0 then
-    ball.x_velocity = -ball.x_velocity
-end
-
-  if ball.y_axis + ball.radius >= buf_height or ball.y_axis  - ball.radius < 0 then
-    ball.y_velocity = -ball.y_velocity
-end
-
+  ball.y_axis = ball.y_axis + ball.y_velocity * dt
+   -- Racket movement
 
   if love.keyboard.isDown("down") then
-      racket.y_axis = racket.y_axis + racket.velocity
+      racket.y_axis = racket.y_axis + racket.velocity * dt
   end
    if love.keyboard.isDown("up") then
-      racket.y_axis = racket.y_axis - racket.velocity
+      racket.y_axis = racket.y_axis - racket.velocity * dt
   end 
  
   if racket.y_axis <= 0  then 
@@ -67,8 +56,19 @@ end
   if racket.y_axis + racket.height > buf_height then 
     racket.y_axis =  buf_height -  racket.height
   end
-  
-  if checkCircleToRectangleCollision(ball,racket) then 
+  -- ================ -- 
+
+  -- Ball bounce physics 
+  if ball.x_axis + ball.radius  >= buf_width or ball.x_axis  - ball.radius < 0 then
+    ball.x_velocity = -ball.x_velocity
+end
+
+  if ball.y_axis + ball.radius >= buf_height or ball.y_axis  - ball.radius < 0 then
+    ball.y_velocity = -ball.y_velocity
+end
+  -- ============== --
+
+    if checkCircleToRectangleCollision(ball,racket) then 
     ball.x_velocity = -ball.x_velocity
   end
 end
